@@ -16,3 +16,4 @@ data/*.sqlite
 data/*.sqlite3
 .DS_Store
 Scaler_SDE_Fullstack_Assignment_-_Fireflies_Clone.docx
+.neon
