@@ -231,7 +231,33 @@ This is a public application with no authentication or authorization. Use only f
 
 ## Screenshots
 
-Screenshots are not included in this repository yet.
+Representative screenshots of the meeting library, meeting details, transcript tools, and meeting management flows:
+
+### Meetings library
+
+![Meetings library with search, filters, sorting, and meeting cards](screenshots/Screenshot%202026-10-09%20111803.png)
+
+![Meeting library cards and participant details](screenshots/Screenshot%202026-10-09%20111754.png)
+
+### Meeting details
+
+![Meeting details with participant list and synchronized media player](screenshots/Screenshot%202026-10-09%20111847.png)
+
+![Transcript, summary, key topics, and action items](screenshots/Screenshot%202026-10-09%20111918.png)
+
+![Meeting topics and action item panel](screenshots/Screenshot%202026-10-09%20111900.png)
+
+![Transcript and summary detail view](screenshots/Screenshot%202026-10-09%20112141.png)
+
+### Create and manage meetings
+
+![Create a meeting form](screenshots/Screenshot%202026-10-09%20111938.png)
+
+![Create meeting transcript and participant fields](screenshots/Screenshot%202026-10-09%20112127.png)
+
+![Edit meeting details dialog](screenshots/Screenshot%202026-10-09%20111950.png)
+
+![Delete meeting confirmation dialog](screenshots/Screenshot%202026-10-09%20112021.png)
 
 ## Hosted Application
 
