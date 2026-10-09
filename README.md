@@ -186,7 +186,7 @@ The seed script provides five demo meetings: Product Planning, Engineering Stand
 
 ## Deployment
 
-The current free-tier setup uses [Vercel Hobby](https://vercel.com/pricing) for Next.js, a [Render Free web service](https://render.com/docs/free) for FastAPI, and [Neon Free PostgreSQL](https://neon.com/pricing) for persistent data. `render.yaml` configures only the backend. The Vercel frontend proxies `/api/*` requests to the Render API, so the browser does not need a direct database connection.
+The current free-tier setup uses [Vercel Hobby](https://vercel.com/pricing) for Next.js, a [Render Free web service](https://render.com/docs/free) for FastAPI, and [Neon Free PostgreSQL](https://neon.com/pricing) for persistent data. `render.yaml` configures only the backend, and `.python-version` pins Render to Python 3.12.10 for SQLAlchemy compatibility. The Vercel frontend proxies `/api/*` requests to the Render API, so the browser does not need a direct database connection.
 
 1. Create a Neon Free project and database. In Neon **Connect**, copy the pooled PostgreSQL connection string; keep it private.
 2. In Render, select **New + → Blueprint**, connect `SharvChopra/fireflies-clone`, and deploy the `main` branch. When prompted for `DATABASE_URL`, paste the Neon connection string into Render's secret environment variable field. Do not commit it or send it in chat. Confirm the `fireflies-api` plan is **Free** before applying.
@@ -235,7 +235,9 @@ Screenshots are not included in this repository yet.
 
 ## Hosted Application
 
-Not deployed yet. Add the Vercel URL here after deployment.
+- Frontend: [https://fireflies-clone-ivory.vercel.app](https://fireflies-clone-ivory.vercel.app)
+- Backend health: [https://fireflies-api-pb6w.onrender.com/health](https://fireflies-api-pb6w.onrender.com/health)
+- Backend API: [https://fireflies-api-pb6w.onrender.com/api/meetings](https://fireflies-api-pb6w.onrender.com/api/meetings)
 
 ## GitHub Repository
 
