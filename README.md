@@ -186,14 +186,17 @@ The seed script provides five demo meetings: Product Planning, Engineering Stand
 
 ## Deployment
 
-This repository does not include Docker, CI, or cloud-provider deployment manifests. A deployment requires a hosted Next.js app and a reachable FastAPI service:
+The repository includes a Render Blueprint in [`render.yaml`](render.yaml) for a Next.js frontend and a private FastAPI backend. The backend uses SQLite on a persistent disk and is reachable by the frontend over Render's private network.
 
-1. Build and host Next.js with `npm run build` and `npm start`.
-2. Run FastAPI with a production ASGI server, without `--reload`.
-3. Set `API_PROXY_TARGET` to the API address and configure the production frontend origin/CORS if using direct browser requests.
-4. Store SQLite on persistent writable storage and configure `DATABASE_URL`; ensure its parent directory exists.
+To deploy from GitHub:
 
-SQLite is suitable for local/demo use and a single application instance. Before production use, add authentication and authorization, HTTPS/reverse-proxy controls, backups, migrations, and an appropriate database strategy. The API should not be exposed publicly in its current unauthenticated configuration.
+1. Sign in to Render and select **New +** → **Blueprint**.
+2. Connect the `SharvChopra/fireflies-clone` GitHub repository and choose the `main` branch.
+3. Review the `render.yaml` configuration. It creates a free frontend service and a paid backend service with a 1 GB persistent disk. Confirm current pricing in Render before creating resources; persistent disks require a paid service.
+4. Apply the Blueprint and wait for both services to finish deploying. The backend is private; use the frontend service URL to access the application.
+5. Check the deployed frontend URL and verify that meetings load and a test change remains after a page refresh.
+
+The frontend may spin down on a free plan, which can cause a delay on its first request. The SQLite disk is attached to one backend instance, so do not scale that service to multiple instances. The application has no authentication or authorization; treat the deployed instance as a public demo, use only fictional/test data, and do not expose confidential meeting content. Add authentication, backups, migrations, and an appropriate database strategy before production use.
 
 ## Assumptions
 
@@ -216,7 +219,7 @@ SQLite is suitable for local/demo use and a single application instance. Before 
 - Search in an open transcript is limited to its loaded segments. Global search covers meeting titles, participant names, summaries, and transcript text; library filters cover title, participant, and exact date.
 - Summaries and topics cannot be edited in the UI. Action items support CRUD and status changes.
 - SQLite schema creation uses `create_all`; there are no versioned migrations.
-- No frontend/backend automated test suite or deployment manifests are configured. Verification commands:
+- No frontend/backend automated test suite is configured. Verification commands:
 
   ```powershell
   npm run build
@@ -235,4 +238,4 @@ No hosted application URL has been provided.
 
 ## GitHub Repository
 
-No GitHub repository URL has been provided.
+[https://github.com/SharvChopra/fireflies-clone](https://github.com/SharvChopra/fireflies-clone)
