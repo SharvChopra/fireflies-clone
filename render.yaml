@@ -1,31 +1,12 @@
 services:
-  - type: pserv
+  - type: web
     name: fireflies-api
     runtime: python
     region: singapore
-    plan: starter
+    plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000
-    disk:
-      name: fireflies-sqlite
-      mountPath: /var/data
-      sizeGB: 1
+    startCommand: python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
-        value: sqlite:////var/data/fireflies.db
-
-  - type: web
-    name: fireflies-web
-    runtime: node
-    region: singapore
-    plan: free
-    buildCommand: npm ci && npm run build
-    startCommand: npm start
-    envVars:
-      - key: API_PROXY_TARGET
-        fromService:
-          type: pserv
-          name: fireflies-api
-          property: hostport
-      - key: API_PROXY_PROTOCOL
-        value: http
+        sync: false

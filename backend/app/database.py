@@ -3,14 +3,20 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 from .config import DATABASE_URL
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+is_sqlite = DATABASE_URL.startswith("sqlite:")
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False} if is_sqlite else {},
+    pool_pre_ping=True,
+)
 
 
-@event.listens_for(engine, "connect")
-def enable_sqlite_foreign_keys(connection, _record) -> None:
-    cursor = connection.cursor()
-    cursor.execute("PRAGMA foreign_keys=ON")
-    cursor.close()
+if is_sqlite:
+    @event.listens_for(engine, "connect")
+    def enable_sqlite_foreign_keys(connection, _record) -> None:
+        cursor = connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
 
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

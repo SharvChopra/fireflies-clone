@@ -8,7 +8,7 @@ from sqlalchemy import delete, or_, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, selectinload
 
-from .database import SessionLocal, get_db, init_db
+from .database import SessionLocal, engine, get_db, init_db
 from .models import ActionItem, Meeting, Participant, Summary, TranscriptSegment
 from .transcript_parser import parse_transcript_segments
 
@@ -228,7 +228,7 @@ def startup_event() -> None:
 
 @app.get("/health")
 def health_check() -> dict:
-    return {"status": "ok", "database": "sqlite"}
+    return {"status": "ok", "database": engine.dialect.name}
 
 
 @app.get("/api/meetings")

@@ -138,10 +138,10 @@ Refreshing resets edits to recognized fixtures; unrelated meetings are preserved
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `DATABASE_URL` | `sqlite:///./data/fireflies.db` | SQLite connection URL. Relative paths depend on the backend working directory. |
-| `API_PROXY_TARGET` | `http://127.0.0.1:8000` | FastAPI destination for Next.js `/api/*` rewrites. |
+| `API_PROXY_TARGET` | `http://127.0.0.1:8000` | FastAPI destination for Next.js `/api/*` rewrites. Use the deployed API's HTTPS URL on Vercel. |
 | `NEXT_PUBLIC_API_BASE_URL` | Empty | Optional browser-facing API base URL. Leave unset to use the same-origin Next.js rewrite. This value is public configuration; do not put secrets here. |
 
-The backend reads environment variables from the process environment; it does not load a `.env` file automatically. Example PowerShell configuration:
+For local use the backend reads environment variables from the process environment; it does not load a `.env` file automatically. Example PowerShell configuration:
 
 ```powershell
 $env:DATABASE_URL = "sqlite:///./data/fireflies.db"
@@ -186,17 +186,18 @@ The seed script provides five demo meetings: Product Planning, Engineering Stand
 
 ## Deployment
 
-The repository includes a Render Blueprint in [`render.yaml`](render.yaml) for a Next.js frontend and a private FastAPI backend. The backend uses SQLite on a persistent disk and is reachable by the frontend over Render's private network.
+The current free-tier setup uses [Vercel Hobby](https://vercel.com/pricing) for Next.js, a [Render Free web service](https://render.com/docs/free) for FastAPI, and [Neon Free PostgreSQL](https://neon.com/pricing) for persistent data. `render.yaml` configures only the backend. The Vercel frontend proxies `/api/*` requests to the Render API, so the browser does not need a direct database connection.
 
-To deploy from GitHub:
+1. Create a Neon Free project and database. In Neon **Connect**, copy the pooled PostgreSQL connection string; keep it private.
+2. In Render, select **New + → Blueprint**, connect `SharvChopra/fireflies-clone`, and deploy the `main` branch. When prompted for `DATABASE_URL`, paste the Neon connection string into Render's secret environment variable field. Do not commit it or send it in chat. Confirm the `fireflies-api` plan is **Free** before applying.
+3. Wait for the backend deploy. Copy its public HTTPS URL, for example `https://fireflies-api.onrender.com`, and verify its `/health` endpoint reports `"database": "postgresql"`.
+4. In Vercel, select **Add New → Project**, import `SharvChopra/fireflies-clone`, and keep the repository root as the project root.
+5. In the Vercel project settings, add `API_PROXY_TARGET` with the Render backend's full HTTPS URL (no trailing slash). Do not set `NEXT_PUBLIC_API_BASE_URL`; leave requests on the same-origin proxy.
+6. Deploy from Vercel and open its assigned URL. Confirm the meeting list loads, then create a test meeting/action item and refresh to verify persistence in Neon.
 
-1. Sign in to Render and select **New +** → **Blueprint**.
-2. Connect the `SharvChopra/fireflies-clone` GitHub repository and choose the `main` branch.
-3. Review the `render.yaml` configuration. It creates a free frontend service and a paid backend service with a 1 GB persistent disk. Confirm current pricing in Render before creating resources; persistent disks require a paid service.
-4. Apply the Blueprint and wait for both services to finish deploying. The backend is private; use the frontend service URL to access the application.
-5. Check the deployed frontend URL and verify that meetings load and a test change remains after a page refresh.
+The Neon connection string is a database credential: set it only in Render's `DATABASE_URL` environment variable. Render Free web services spin down after 15 minutes without inbound traffic and can take about a minute to wake; they also have monthly usage limits. Neon Free currently includes 1 GB storage per project and 100 compute-unit hours per project; its compute scales to zero after inactivity. Vercel Hobby is intended for personal/non-commercial use. Free-plan terms and limits can change, so check the linked provider pages and dashboard before deploying.
 
-The frontend may spin down on a free plan, which can cause a delay on its first request. The SQLite disk is attached to one backend instance, so do not scale that service to multiple instances. The application has no authentication or authorization; treat the deployed instance as a public demo, use only fictional/test data, and do not expose confidential meeting content. Add authentication, backups, migrations, and an appropriate database strategy before production use.
+This is a public application with no authentication or authorization. Use only fictional/demo data; do not store real or confidential meeting content. Free plans are for demos and are not an availability guarantee or production hosting. Keep Neon credentials out of GitHub and do not paste them into chat.
 
 ## Assumptions
 
@@ -234,7 +235,7 @@ Screenshots are not included in this repository yet.
 
 ## Hosted Application
 
-No hosted application URL has been provided.
+Not deployed yet. Add the Vercel URL here after deployment.
 
 ## GitHub Repository
 
